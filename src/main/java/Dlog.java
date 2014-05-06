@@ -24,8 +24,17 @@ public class Dlog {
         Integer B = (int)Math.pow(2, 20);
         Map<BigInteger, Integer> left = new HashMap<BigInteger, Integer>(B + 1);
         Integer x0, x1;
+        BigInteger result;
 
+        Integer beacon = -1;
+
+        System.out.printf("Starting to calcuate Dlog_g(h) under modulo p...\n");
         for (x1 = 0; x1 < B + 1; x1++) {
+            if ((int)(x1 * 100 / B) > beacon) {
+                beacon = (int)(x1 * 100 / B);
+                System.out.printf("%d%% completed...\n", beacon);
+                System.out.flush();
+            }
             left.put(h.multiply(g.modPow(new BigInteger(x1.toString()), p).modInverse(p)).mod(p), x1);
         }
 
@@ -37,7 +46,8 @@ public class Dlog {
             }
         }
 
-        System.out.printf("Dlog is: " + (x0 * B + x1));
+        result = new BigInteger(B.toString()).multiply(new BigInteger(x0.toString())).add(new BigInteger(x1.toString()));
+        System.out.printf("Dlog_g(h) is: " + result);
 
     }
 }
