@@ -29,18 +29,22 @@ public class Dlog {
         Integer beacon = -1;
 
         System.out.printf("Starting to calcuate Dlog_g(h) under modulo p...\n");
+        System.out.printf("Building up hash table for middle attack...\n");
         for (x1 = 0; x1 < B + 1; x1++) {
             if ((int)(x1 * 100 / B) > beacon) {
                 beacon = (int)(x1 * 100 / B);
                 System.out.printf("%d%% completed...\n", beacon);
                 System.out.flush();
             }
-            left.put(h.multiply(g.modPow(new BigInteger(x1.toString()), p).modInverse(p)).mod(p), x1);
+            // power: 2^20, 20 bit.
+            left.put(h.multiply(g.modPow(new BigInteger("-" + x1.toString()), p)).mod(p), x1);
         }
 
+        System.out.printf("Searching for collision...\n");
         for (x0 = 0; x0 < B + 1; x0++) {
             BigInteger right = g.modPow(new BigInteger(B.toString()), p).modPow(new BigInteger(x0.toString()), p);
             if(left.containsKey(right)) {
+                System.out.printf("Found...");
                 x1 = left.get(right);
                 break;
             }
